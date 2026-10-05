@@ -1,0 +1,43 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Review Submission | Student Awards{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2 awards-page">
+  <a class="awards-back-link" href="{{ url_for('admin_home_view') }}">
+    <span class="material-symbols-outlined align-middle" aria-hidden="true">arrow_back</span>
+    Pending approvals
+  </a>
+
+  <section class="card awards-content-card awards-form-card mt-3">
+    <div class="card-body p-3 p-lg-4">
+      <p class="awards-eyebrow mb-1">A little recognition goes a long way</p>
+      <h1 class="h3 mb-4">Review submission</h1>
+
+      <dl class="row mb-4">
+        <dt class="col-sm-4">Student</dt>
+        <dd class="col-sm-8">{{ submission.student.username }}</dd>
+        <dt class="col-sm-4">Activity</dt>
+        <dd class="col-sm-8">{{ submission.activity }}</dd>
+        <dt class="col-sm-4">Date completed</dt>
+        <dd class="col-sm-8">{{ submission.date.strftime("%b %d, %Y") }}</dd>
+        <dt class="col-sm-4">Hours</dt>
+        <dd class="col-sm-8">{{ "%.1f"|format(submission.hours) }}</dd>
+        <dt class="col-sm-4">Proof</dt>
+        <dd class="col-sm-8"><span class="badge text-bg-light">{{ submission.proof.rsplit("/", 1)[-1] }}</span></dd>
+      </dl>
+
+      <form method="post" action="{{ url_for('review_volunteer_hours', submission_id=submission.id) }}">
+        <div class="mb-4">
+          <label class="form-label fw-bold" for="comment">Comment <span class="text-muted fw-normal">(required to reject)</span></label>
+          <textarea class="form-control" id="comment" name="comment" rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="d-flex flex-wrap justify-content-end gap-2">
+          <a class="btn btn-outline-secondary" href="{{ url_for('admin_home_view') }}">Cancel</a>
+          <button class="btn btn-outline-danger" type="submit" name="decision" value="reject">Reject</button>
+          <button class="btn btn-awards-primary" type="submit" name="decision" value="approve">Approve</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}

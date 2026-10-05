@@ -1,0 +1,42 @@
+@startuml
+!pragma layout smetana
+skinparam shadowing false
+skinparam actorBorderColor #1B365D
+skinparam actorFontColor #1E232D
+skinparam usecaseBackgroundColor #FFFFFF
+skinparam usecaseBorderColor #1B365D
+skinparam usecaseFontColor #1E232D
+skinparam rectangleBorderColor #1B365D
+skinparam rectangleBackgroundColor #F8FAFC
+skinparam arrowColor #1B365D
+
+actor "Student" as Student
+
+rectangle "Student Awards (incentive system)" {
+  usecase "Sign In" as Sign_In
+  usecase "Submit Volunteer Hours" as Submit_Volunteer_Hours
+  usecase "View Approved Hours" as View_Approved_Hours
+  usecase "Browse Prize List" as Browse_Prize_List
+  usecase "Redeem a Prize" as Redeem_a_Prize
+  usecase "Show Points Shortfall" as Show_Points_Shortfall
+  usecase "View Pending Approvals" as View_Pending_Approvals
+  usecase "Approve or Reject Volunteer Hours" as Approve_or_Reject_Volunteer_Hours
+  usecase "Review Submitted Hours" as Review_Submitted_Hours
+}
+
+actor "Admin" as Admin
+
+Student --> Sign_In
+Sign_In <-- Admin
+Student --> Submit_Volunteer_Hours
+Student --> View_Approved_Hours
+Student --> Browse_Prize_List
+Student --> Redeem_a_Prize
+Redeem_a_Prize ..> Browse_Prize_List : <<include>>
+Show_Points_Shortfall ..> Redeem_a_Prize : <<extend>>
+View_Pending_Approvals <-- Admin
+Approve_or_Reject_Volunteer_Hours <-- Admin
+Approve_or_Reject_Volunteer_Hours ..> Review_Submitted_Hours : <<include>>
+Review_Submitted_Hours ..> View_Pending_Approvals : <<include>>
+
+@enduml

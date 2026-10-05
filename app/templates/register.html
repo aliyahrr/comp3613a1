@@ -4,9 +4,9 @@
 {% block content %}
 <div class="auth-shell">
   <div class="auth-panel">
-    <a class="auth-back" href="{{ url_for('index_view') }}">← Home</a>
-    <div class="brand-wordmark">FastStarter</div>
-    <p class="auth-tagline">Create an account</p>
+    <a class="auth-back" href="{{ url_for('index_view') }}"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span> Home</a>
+    <div class="brand-lockup brand-wordmark"><span class="brand-star material-symbols-outlined" aria-hidden="true">star</span> Student Awards</div>
+    <p class="auth-tagline">Your good-work era starts here!</p>
 
     <form method="POST" action="{{ url_for('register_view') }}">
       <div class="mb-3">
@@ -22,8 +22,8 @@
         <input class="form-control" type="password" id="password" name="password" required>
       </div>
       <div class="d-grid gap-2 mb-3">
-        <button class="btn btn-primary btn-lg" type="submit">Register</button>
-        <a class="btn btn-outline-secondary" href="{{ url_for('login_view') }}">Back to sign in</a>
+        <button class="btn btn-primary btn-lg" type="submit">Join the good stuff</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('login_view') }}">Already a member? Sign in</a>
       </div>
 
       {% for message in get_flashed_messages(request) %}

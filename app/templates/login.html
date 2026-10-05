@@ -4,9 +4,9 @@
 {% block content %}
 <div class="auth-shell">
   <div class="auth-panel">
-    <a class="auth-back" href="{{ url_for('index_view') }}">← Home</a>
-    <div class="brand-wordmark">FastStarter</div>
-    <p class="auth-tagline">Sign in to continue</p>
+    <a class="auth-back" href="{{ url_for('index_view') }}"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span> Home</a>
+    <div class="brand-lockup brand-wordmark"><span class="brand-star material-symbols-outlined" aria-hidden="true">star</span> Student Awards</div>
+    <p class="auth-tagline">Ready to make your good work count?</p>
 
     <form method="POST" action="{{ url_for('login_action_ajax') }}">
       <div class="mb-3">
@@ -18,7 +18,7 @@
         <input class="form-control" type="password" id="password" name="password" required>
       </div>
       <div class="d-grid gap-2 mb-3">
-        <button class="btn btn-primary btn-lg" type="submit">Sign in</button>
+        <button class="btn btn-primary btn-lg" type="submit">Let’s go!</button>
         <a class="btn btn-outline-secondary" href="{{ url_for('register_view') }}">Create an account</a>
       </div>
     </form>

@@ -1,0 +1,47 @@
+{
+  "system": "Student Awards (incentive system)",
+  "actors": [
+    {"name": "Student", "side": "left"},
+    {"name": "Admin", "side": "right"}
+  ],
+  "use_cases": [
+    {
+      "name": "Sign In",
+      "actors": ["Student", "Admin"]
+    },
+    {
+      "name": "Submit Volunteer Hours",
+      "actors": ["Student"]
+    },
+    {
+      "name": "View Approved Hours",
+      "actors": ["Student"]
+    },
+    {
+      "name": "Browse Prize List",
+      "actors": ["Student"]
+    },
+    {
+      "name": "Redeem a Prize",
+      "actors": ["Student"],
+      "includes": ["Browse Prize List"]
+    },
+    {
+      "name": "Show Points Shortfall",
+      "extends": ["Redeem a Prize"]
+    },
+    {
+      "name": "View Pending Approvals",
+      "actors": ["Admin"]
+    },
+    {
+      "name": "Approve or Reject Volunteer Hours",
+      "actors": ["Admin"],
+      "includes": ["Review Submitted Hours"]
+    },
+    {
+      "name": "Review Submitted Hours",
+      "includes": ["View Pending Approvals"]
+    }
+  ]
+}

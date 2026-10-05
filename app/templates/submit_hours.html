@@ -1,0 +1,48 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Submit Hours | Student Awards{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2 awards-page">
+  <a class="awards-back-link" href="{{ url_for('user_home_view') }}">
+    <span class="material-symbols-outlined align-middle" aria-hidden="true">arrow_back</span>
+    My hours
+  </a>
+
+  <section class="card awards-content-card awards-form-card mt-3">
+    <div class="card-body p-3 p-lg-4">
+      <p class="awards-eyebrow mb-1">Look at you making a difference!</p>
+      <h1 class="h3 mb-2">Submit volunteer hours</h1>
+      <p class="text-muted mb-4">Add the details below and an admin will review your submission.</p>
+
+      <form method="post" action="{{ url_for('submit_volunteer_hours') }}" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label class="form-label fw-bold" for="activity">Activity</label>
+          <input class="form-control" type="text" id="activity" name="activity" maxlength="160" required>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label class="form-label fw-bold" for="hours">Hours completed</label>
+            <input class="form-control" type="number" id="hours" name="hours" min="0.1" step="0.1" required>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label fw-bold" for="date_completed">Date completed</label>
+            <input class="form-control" type="date" id="date_completed" name="date_completed" required>
+          </div>
+        </div>
+
+        <div class="mt-3 mb-4">
+          <label class="form-label fw-bold" for="proof_file">Upload proof <span class="text-danger">*</span></label>
+          <input class="form-control" type="file" id="proof_file" name="proof_file" accept=".pdf,.jpg,.jpeg,.png" required>
+          <div class="form-text">PDF, JPG, or PNG files are accepted.</div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-end gap-2">
+          <a class="btn btn-outline-secondary" href="{{ url_for('user_home_view') }}">Cancel</a>
+          <button class="btn btn-awards-primary" type="submit">Submit for review</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
