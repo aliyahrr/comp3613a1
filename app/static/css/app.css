@@ -416,6 +416,84 @@ body {
   max-width: 48rem;
 }
 
+.awards-prize-card {
+  overflow: hidden;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--brand-radius);
+  box-shadow: 0 0.4rem 1.4rem rgba(23, 43, 77, 0.06);
+}
+
+.awards-prize-art,
+.awards-receipt-art,
+.awards-motivation-art {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--brand-border);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, #fff9e8, #e6f7f8);
+  color: #b27a00;
+}
+
+.awards-prize-art {
+  min-height: 10rem;
+  margin: 0.75rem 0.75rem 0;
+}
+
+.awards-prize-art .material-symbols-outlined {
+  font-size: 4rem;
+}
+
+.awards-balance-pill {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--brand-border);
+  border-radius: 999px;
+  background: var(--brand-surface);
+  color: var(--brand-ink);
+}
+
+.awards-balance-pill .material-symbols-outlined {
+  color: #b27a00;
+}
+
+.awards-confirm-card,
+.awards-shortfall-card,
+.awards-receipt-card {
+  max-width: 42rem;
+}
+
+.awards-encouragement {
+  color: #b27a00;
+  font-family: var(--brand-font-display);
+  font-size: 1.5rem;
+}
+
+.awards-motivation-art {
+  width: 7rem;
+  height: 7rem;
+}
+
+.awards-motivation-art .material-symbols-outlined {
+  font-size: 3.5rem;
+}
+
+.awards-receipt-art {
+  width: 10rem;
+  height: 8rem;
+}
+
+.awards-receipt-art .material-symbols-outlined {
+  font-size: 4.5rem;
+}
+
+.awards-qr {
+  display: block;
+  width: 10rem;
+  height: 10rem;
+  margin-inline: auto;
+  border: 0.5rem solid #fff;
+  box-shadow: 0 0 0 1px var(--brand-border);
+}
+
 .awards-page .form-control {
   border-color: var(--brand-border);
   border-radius: 0.75rem;

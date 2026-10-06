@@ -19,3 +19,4 @@ sqlmodel==0.0.42
 tabulate==0.10.0
 uvicorn[standard]==0.53.0
 pillow==12.3.0
+qrcode[pil]==8.2

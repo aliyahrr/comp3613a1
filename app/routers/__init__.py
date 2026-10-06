@@ -24,4 +24,5 @@ from . import (
     logout,
     server_config,
     volunteer_hours,
+    prizes,
 )

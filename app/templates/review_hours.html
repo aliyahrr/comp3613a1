@@ -13,6 +13,10 @@
       <p class="awards-eyebrow mb-1">A little recognition goes a long way</p>
       <h1 class="h3 mb-4">Review submission</h1>
 
+      {% if error %}
+      <div class="alert alert-danger" role="alert">{{ error }}</div>
+      {% endif %}
+
       <dl class="row mb-4">
         <dt class="col-sm-4">Student</dt>
         <dd class="col-sm-8">{{ submission.student.username }}</dd>
@@ -23,7 +27,11 @@
         <dt class="col-sm-4">Hours</dt>
         <dd class="col-sm-8">{{ "%.1f"|format(submission.hours) }}</dd>
         <dt class="col-sm-4">Proof</dt>
-        <dd class="col-sm-8"><span class="badge text-bg-light">{{ submission.proof.rsplit("/", 1)[-1] }}</span></dd>
+        <dd class="col-sm-8">
+          <a href="{{ url_for('admin_view_proof', submission_id=submission.id) }}" target="_blank" rel="noopener">
+            {{ submission.proof.rsplit("/", 1)[-1] }}
+          </a>
+        </dd>
       </dl>
 
       <form method="post" action="{{ url_for('review_volunteer_hours', submission_id=submission.id) }}">

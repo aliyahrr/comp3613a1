@@ -5,5 +5,7 @@ Import every table model here so ``SQLModel.metadata.create_all`` sees them.
 
 from app.models.user import User
 from app.models.volunteer_hours import VolunteerHours
+from app.models.prize import Prize
+from app.models.redemption import Redemption
 
-__all__ = ["User", "VolunteerHours"]
+__all__ = ["User", "VolunteerHours", "Prize", "Redemption"]

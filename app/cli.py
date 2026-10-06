@@ -86,6 +86,28 @@ def cmd_seed(args: argparse.Namespace) -> None:
             print(f"  create {username} ({role})")
             created += 1
 
+    from app.models.prize import Prize
+    from app.repositories.prize import PrizeRepository
+
+    catalog = [
+        ("$50 Amazon Giftcard", "A $50 gift card reward.", 10, 5),
+        ("T-shirt", "Student Awards branded T-shirt.", 4, 0),
+        ("Waterbottle", "Reusable Student Awards waterbottle.", 3, 10),
+    ]
+    with get_cli_session() as session:
+        prize_repo = PrizeRepository(session)
+        for name, description, cost, stock in catalog:
+            if prize_repo.get_by_name(name) is None:
+                prize_repo.create_prize(
+                    Prize(
+                        name=name,
+                        description=description,
+                        cost=cost,
+                        stock=stock,
+                    )
+                )
+                print(f"  create prize {name} ({stock} in stock)")
+
     print(f"Seed done — created {created}, skipped {skipped}.")
     print("Login with bob/bobpass or admin/adminpass")
 

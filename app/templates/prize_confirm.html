@@ -1,0 +1,28 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Confirm Prize | Student Awards{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2 awards-page">
+  <a class="awards-back-link" href="{{ url_for('prizes_view') }}">
+    <span class="material-symbols-outlined align-middle" aria-hidden="true">arrow_back</span>
+    Back to prizes
+  </a>
+
+  <section class="card awards-content-card awards-confirm-card mt-3 mx-auto">
+    <div class="card-body p-4 p-lg-5">
+      <p class="awards-eyebrow mb-1">A little treat, well earned</p>
+      <h1 class="h3 mb-4">Redeem {{ prize.name }}?</h1>
+      <dl class="row">
+        <dt class="col-7">Cost</dt>
+        <dd class="col-5 text-end">{{ prize.cost }} hours</dd>
+        <dt class="col-7">Balance after</dt>
+        <dd class="col-5 text-end">{{ "%.1f"|format(balance_after) }} hours</dd>
+      </dl>
+      <form method="post" action="{{ url_for('redeem_prize', prize_id=prize.id) }}" class="d-flex justify-content-end gap-2 mt-4">
+        <a class="btn btn-outline-secondary" href="{{ url_for('prizes_view') }}">Cancel</a>
+        <button class="btn btn-awards-primary" type="submit">Redeem!</button>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Keep Going! | Student Awards{% endblock %}
+
+{% block subpage_content %}
+<div class="container-fluid py-2 awards-page">
+  <section class="card awards-content-card awards-shortfall-card mx-auto text-center">
+    <div class="card-body p-4 p-lg-5">
+      <p class="awards-eyebrow mb-1">Your next reward is in reach</p>
+      <h1 class="h3 mb-3">Need {{ "%.1f"|format(shortfall) }} more approved hours to claim {{ prize.name }}</h1>
+      <p class="awards-encouragement">You can do it!</p>
+      <div class="awards-motivation-art mx-auto my-4" aria-hidden="true">
+        <span class="material-symbols-outlined">volunteer_activism</span>
+      </div>
+      <a class="btn btn-awards-primary" href="{{ url_for('submit_volunteer_hours_form') }}">Submit hours</a>
+      <div class="mt-4">
+        <a class="awards-back-link" href="{{ url_for('prizes_view') }}">Back to prizes</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

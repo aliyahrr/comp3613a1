@@ -68,12 +68,26 @@
 
         <ul class="nav nav-pills flex-column gap-2 flex-grow-1">
             <li class="nav-item">
+                {% if user.role == "admin" %}
+                <a class="nav-link d-flex align-items-center {{ 'active' if request.url.path.startswith('/admin') }}"
+                   href="{{ url_for('admin_home_view') }}">
+                {% else %}
                 <a class="nav-link d-flex align-items-center {{ 'active' if request.url.path.startswith('/app') }}"
                    href="{{ url_for('user_home_view') }}">
+                {% endif %}
                     <span class="material-symbols-outlined me-2">home</span>
                     Home
                 </a>
             </li>
+            {% if user.role != "admin" %}
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center {{ 'active' if request.url.path.startswith('/app/prizes') or request.url.path.startswith('/app/redemptions') }}"
+                   href="{{ url_for('prizes_view') }}">
+                    <span class="material-symbols-outlined me-2" aria-hidden="true">redeem</span>
+                    Prizes
+                </a>
+            </li>
+            {% endif %}
             <li class="nav-item mt-auto">
                 <a class="nav-link d-flex align-items-center text-danger" href="{{ url_for('logout') }}">
                     <span class="material-symbols-outlined me-2">logout</span>
