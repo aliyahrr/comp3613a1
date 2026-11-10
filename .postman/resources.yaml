@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: ""
+
+localResources:
+  collections:
+    - ../docs/postman/student-awards-api.postman_collection.json

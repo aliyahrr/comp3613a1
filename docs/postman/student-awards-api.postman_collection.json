@@ -1,0 +1,570 @@
+{
+  "info": {
+    "name": "Student Awards FastAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Tests the app's cookie-authenticated HTML/form workflows and its JSON API."
+  },
+  "item": [
+    {
+      "name": "Authorization - no cookie returns 401",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/admin"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Unauthenticated admin request returns 401', function () {",
+              "  pm.response.to.have.status(401);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health - GET /health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Health endpoint returns its JSON response', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json()).to.eql({ ok: true });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users API - GET /api/users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/users"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Users API returns the UserResponse list', function () {",
+              "  pm.response.to.have.status(200);",
+              "  const users = pm.response.json();",
+              "  pm.expect(users).to.be.an('array');",
+              "  pm.expect(users.some((user) => user.username === 'bob')).to.be.true;",
+              "  pm.expect(users.some((user) => user.username === 'admin')).to.be.true;",
+              "  users.forEach((user) => {",
+              "    pm.expect(user).to.have.all.keys('id', 'username', 'email');",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login as student - POST /login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "bob"
+            },
+            {
+              "key": "password",
+              "value": "bobpass"
+            }
+          ]
+        },
+        "url": "{{base_url}}/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Student login sets the cookie and redirects to the student app', function () {",
+              "  pm.expect([200, 303]).to.include(pm.response.code);",
+              "  if (pm.response.code === 303) {",
+              "    pm.expect(pm.response.headers.get('Set-Cookie')).to.include('access_token=');",
+              "    pm.expect(pm.response.headers.get('Location')).to.include('/app');",
+              "  } else {",
+              "    pm.expect(pm.response.text().toLowerCase()).to.include('my hours');",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authorization - student on admin route returns 403",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/admin"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A signed-in student is forbidden from the admin route', function () {",
+              "  pm.response.to.have.status(403);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hours validation - invalid hours returns 422",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "activity",
+              "value": "Postman validation check",
+              "type": "text"
+            },
+            {
+              "key": "date_completed",
+              "value": "2026-11-09",
+              "type": "text"
+            },
+            {
+              "key": "hours",
+              "value": "0",
+              "type": "text"
+            },
+            {
+              "key": "proof_file",
+              "type": "file",
+              "src": "tests/fixtures/proof.pdf",
+              "description": "Postman Desktop: select tests/fixtures/proof.pdf from the repository. This field is required."
+            }
+          ]
+        },
+        "url": "{{base_url}}/app/hours/submit"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Zero hours fail FastAPI form validation with 422', function () {",
+              "  pm.response.to.have.status(422);",
+              "  const details = pm.response.json().detail;",
+              "  pm.expect(details).to.be.an('array').that.is.not.empty;",
+              "  pm.expect(details[0].loc).to.include('hours');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submit volunteer hours - POST /app/hours/submit",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "activity",
+              "value": "Postman acceptance submission",
+              "type": "text"
+            },
+            {
+              "key": "date_completed",
+              "value": "2026-11-09",
+              "type": "text"
+            },
+            {
+              "key": "hours",
+              "value": "12",
+              "type": "text"
+            },
+            {
+              "key": "proof_file",
+              "type": "file",
+              "src": "tests/fixtures/proof.pdf",
+              "description": "Postman Desktop: select tests/fixtures/proof.pdf from the repository. This field is required."
+            }
+          ]
+        },
+        "url": "{{base_url}}/app/hours/submit"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Valid volunteer-hours submission redirects to the student app', function () {",
+              "  pm.expect([200, 303]).to.include(pm.response.code);",
+              "  if (pm.response.code === 303) {",
+              "    pm.expect(pm.response.headers.get('Location')).to.include('/app');",
+              "  } else {",
+              "    pm.expect(pm.response.text()).to.include('Postman acceptance submission');",
+              "    pm.expect(pm.response.text()).to.include('Pending');",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login as admin - POST /login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "admin"
+            },
+            {
+              "key": "password",
+              "value": "adminpass"
+            }
+          ]
+        },
+        "url": "{{base_url}}/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Admin login sets the cookie and redirects to the admin page', function () {",
+              "  pm.expect([200, 303]).to.include(pm.response.code);",
+              "  if (pm.response.code === 303) {",
+              "    pm.expect(pm.response.headers.get('Set-Cookie')).to.include('access_token=');",
+              "    pm.expect(pm.response.headers.get('Location')).to.include('/admin');",
+              "  } else {",
+              "    pm.expect(pm.response.text().toLowerCase()).to.include('pending approvals');",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pending submissions - GET /admin",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/admin"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Pending list contains the submitted hours and captures its generated id', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.text()).to.include('Postman acceptance submission');",
+              "  const match = pm.response.text().match(/href=\"[^\"]*\\/admin\\/hours\\/(\\d+)\"/);",
+              "  pm.expect(match, 'review link for submitted hours').to.not.be.null;",
+              "  if (match) pm.collectionVariables.set('submission_id', match[1]);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Review details - GET /admin/hours/:submission_id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/admin/hours/{{submission_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Review detail shows the submitted activity and hours', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.text()).to.include('Postman acceptance submission');",
+              "  pm.expect(pm.response.text()).to.include('12.0');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "View proof - GET /admin/hours/:submission_id/proof",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/admin/hours/{{submission_id}}/proof"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Admin proof route returns the uploaded PDF', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/pdf');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Approve hours - POST /admin/hours/:submission_id/review",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "decision",
+              "value": "approve"
+            },
+            {
+              "key": "comment",
+              "value": "Approved by Postman test"
+            }
+          ]
+        },
+        "url": "{{base_url}}/admin/hours/{{submission_id}}/review"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Admin approval redirects to the pending list', function () {",
+              "  pm.expect([200, 303]).to.include(pm.response.code);",
+              "  if (pm.response.code === 303) {",
+              "    pm.expect(pm.response.headers.get('Location')).to.include('/admin');",
+              "  } else {",
+              "    pm.expect(pm.response.text().toLowerCase()).to.include('pending approvals');",
+              "    pm.expect(pm.response.text()).to.not.include('Review submission');",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login as student again - POST /login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "bob"
+            },
+            {
+              "key": "password",
+              "value": "bobpass"
+            }
+          ]
+        },
+        "url": "{{base_url}}/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Student login restores the student cookie session', function () {",
+              "  pm.expect([200, 303]).to.include(pm.response.code);",
+              "  if (pm.response.code === 303) {",
+              "    pm.expect(pm.response.headers.get('Set-Cookie')).to.include('access_token=');",
+              "    pm.expect(pm.response.headers.get('Location')).to.include('/app');",
+              "  } else {",
+              "    pm.expect(pm.response.text().toLowerCase()).to.include('my hours');",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prize shop - GET /app/prizes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/app/prizes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Student prize shop shows the seeded catalog', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.text()).to.include('$50 Amazon Giftcard');",
+              "  pm.expect(pm.response.text()).to.include('10 hours');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prize id 1 confirmation - GET /app/prizes/1/confirm",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/app/prizes/1/confirm"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Seeded prize id 1 exists and bob has enough approved hours', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.text()).to.include('$50 Amazon Giftcard');",
+              "  pm.expect(pm.response.text()).to.include('10');",
+              "  pm.expect(pm.response.text()).to.not.include('more hours to redeem');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Redeem prize id 1 - POST /app/prizes/1/redeem",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{base_url}}/app/prizes/1/redeem"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Redemption redirects to its generated receipt URL', function () {",
+              "  pm.expect([200, 303]).to.include(pm.response.code);",
+              "  const location = pm.response.headers.get('Location');",
+              "  let match = location && location.match(/\\/app\\/redemptions\\/([A-F0-9]+)/);",
+              "  if (pm.response.code === 200) {",
+              "    match = pm.response.text().match(/Receipt code:\\s*([A-F0-9]+)/);",
+              "  }",
+              "  pm.expect(match, 'generated receipt code in redirect').to.not.be.null;",
+              "  if (match) pm.collectionVariables.set('receipt_code', match[1]);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Redemption receipt - GET /app/redemptions/:receipt_code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/app/redemptions/{{receipt_code}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Receipt page shows the redeemed prize', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.text()).to.include('$50 Amazon Giftcard');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Redemption QR - GET /app/redemptions/:receipt_code/qr",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/app/redemptions/{{receipt_code}}/qr"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Receipt QR endpoint returns a PNG image', function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.headers.get('Content-Type')).to.include('image/png');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "submission_id",
+      "value": ""
+    },
+    {
+      "key": "receipt_code",
+      "value": ""
+    }
+  ]
+}

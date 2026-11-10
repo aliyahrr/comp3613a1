@@ -27,7 +27,7 @@ def submit_volunteer_hours(
     db: SessionDep,
     activity: str = Form(),
     date_completed: date = Form(),
-    hours: float = Form(),
+    hours: float = Form(gt=0),
     proof_file: UploadFile = File(),
 ):
     if user.id is None:

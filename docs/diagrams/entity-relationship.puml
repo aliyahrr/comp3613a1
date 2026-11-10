@@ -1,0 +1,61 @@
+@startuml
+!pragma layout smetana
+hide circle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam entity {
+  BackgroundColor #FFFFFF
+  BorderColor #1B365D
+  FontColor #1E232D
+}
+skinparam ArrowColor #1B365D
+
+entity "User" as User {
+  * id : int <<PK>>
+  --
+  username : string
+  email : string
+  role : string
+  approved_hours : float
+  lifetime_hours : float
+}
+
+entity "VolunteerHours" as VolunteerHours {
+  * id : int <<PK>>
+  --
+  student_id : int <<FK>>
+  activity : string
+  date : date
+  hours : float
+  proof : string
+  status : Pending/Approved/Rejected
+  reviewed_by : int <<FK>>
+  comment : string
+  date_reviewed : datetime
+  date_submitted : datetime
+}
+
+entity "Prize" as Prize {
+  * id : int <<PK>>
+  --
+  name : string
+  description : string
+  cost : int
+  stock : int
+}
+
+entity "Redemption" as Redemption {
+  * id : int <<PK>>
+  --
+  student_id : int <<FK>>
+  prize_id : int <<FK>>
+  hours_spent : float
+  redeemed_at : datetime
+  receipt_code : string <<UK>>
+}
+
+User ||--o{ VolunteerHours : submits
+User ||--o{ VolunteerHours : reviews
+User ||--o{ Redemption : redeems
+Prize ||--o{ Redemption : redeemed_for
+@enduml

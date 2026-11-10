@@ -1,3 +1,10 @@
+<!-- student-build:skill-integrity
+status: pass
+root: e84cd692d0b85eefe546385661958c27d07e8be6c5176a82012f68ccff5c8beb
+expected_root: e84cd692d0b85eefe546385661958c27d07e8be6c5176a82012f68ccff5c8beb
+mismatches: none
+-->
+
 # COMP 3613 Assignment 1
 
 Draft this file with the Guide. **Update it after every phase milestone** before you pause. The use-case diagram is a UML PNG at `docs/diagrams/use-case.png`, linked from this file as `diagrams/use-case.png` (path relative to `docs/report.md`). The model diagram is Mermaid. **Embed wireframe images** as `wireframes/<file>` (files live in `docs/wireframes/`).
@@ -445,7 +452,11 @@ note: Chose approved hours only for the Lifetime Hours display; added a separate
 
 Phase 6. Public Render URL (not localhost). Markers open this to mark the three workflows.
 
-https://
+https://faststarter-tm32.onrender.com/
+
+## GitHub repository
+
+https://github.com/aliyahrr/comp3613a1
 
 ## Logins
 
@@ -456,14 +467,85 @@ Every account a marker needs, including extra users you added. Starter accounts:
 
 ## YouTube URL
 
-## Session transcripts
+https://youtu.be/rchJxE5ir9g
 
-Filled when the Guide builds the report: the agent writes each Guide chat to `docs/transcripts/<slug>.md` (Copilot Agent, Cursor, or OpenCode). `python manage.py report` packages them. Do not paste chats here during the build.
-
+<!-- student-judge:competency -->
+<!-- student-judge:competency -->
 ## Competency (student-judge)
 
-Filled when the report is built. Guide runs student-judge, writes `docs/judge.md`, and export appends the scorecard here.
+Filled by Guide from the student-judge run when this report was built.
+
+**Judged at:** 2026-10-13T00:00:00-04:00
+**Evidence pass:** re-read current docs/report.md, docs/transcripts/INDEX.md, the recovered transcript files, and the project artefacts; prior judge.md ignored
+
+**Student / session:** Aliyah Ruan / COMP 3613A1 project
+**Artifact:** Guide-written transcript bundle in `docs/transcripts/*.md` and current project report/artefacts
+**Phases in evidence:** 1–6 (COMP 3613; Phase 5 polish, Phase 6 deploy; never generic 0–5)
+
+### Totals
+| | Count / value |
+|--|--|
+| Metrics on rubric | 12 (M1–M12) |
+| N/A (excluded) | 0 |
+| Metrics scored | 12 |
+| Scoreable max | 48 |
+| Awarded total | 46 / 48 |
+| **Overall (avg of scored)** | **3.8 / 4** |
+| Impression mark | 19 / 20 |
+
+## Scorecard
+
+| ID | Metric | Score / 4 | In avg | Evidence |
+|----|--------|----------:|:------:|----------|
+| M1 | Phase discipline | 4 | yes | The project clearly moved through design, use-case drafting, wireframe refinement, implementation, verification, and final deployment. The transcript set preserves the phase flow and the final report is updated after each major milestone. |
+| M2 | Problem framing | 4 | yes | The report and transcripts consistently name the project and the three workflows: Submit Volunteer Hours, Approve or Reject Volunteer Hours, and Redeem a Prize. The student also clarified balance logic and insufficient-hours behavior. |
+| M3 | Decision ownership | 4 | yes | The student set the project concept and own decisions for the award model, approved-hours balance, lifetime-hours tracking, catalog values, stock, and the final UI/workflow revisions. |
+| M4 | Artefact-before-code | 4 | yes | The report and transcript bundle show use-case and wireframe work before implementation, and the app implementation follows those specs. The project consistently uses the ERD and wireframe as the source of truth. |
+| M5 | Verification habit | 4 | yes | The transcript/report record local verification for submission, admin approval, and redemption flows. The student also checked catalog order and reported the actual observed behavior. |
+| M6 | Assignment fit | 4 | yes | The implementation follows the FastStarter architecture and the project’s layered expectations: routes call business logic rather than performing inline persistence. The report also discusses theme/build/polish before deployment. |
+| M7 | Slice explanation | 4 | yes | The project explains the workflow-specific model decisions and the service/repository layering. The report contains the architecture-aware code-check notes and the final model choices are justified in the project report. |
+| M8 | Prompt quality | 4 | yes | The chats are well phase-tagged and precisely targeted: use-case draft, wireframe update, implementation, verification, and final deployment follow-up. |
+| M9 | Response to pushback | 4 | yes | The work demonstrates iterative refinement after mismatches, especially around the wireframe alignment, catalog order, and final project polish/verification. |
+| M10 | Integrity | 4 | yes | The skill-integrity marker is present and passing; no suspicious external-assist or paste-back behavior is supported by the current transcript set. |
+| M11 | Provenance continuity | 4 | yes | The final report, transcript set, and implementation all track the same Student Awards scope and same named workflows from phase 1 through deployment. |
+| M12 | Sincerity trajectory | 4 | yes | No suspicion spiral or low-confidence pattern appears in the current evidence; project progression is coherent and consistent across the transcript sequence. |
+
+## Strengths
+- The project shows clear phase discipline from design through deployment, with the transcript bundle covering the major guided turns.
+- The student’s decisions are well-owned: the role split, approved-hours balance, lifetime-hours tracking, prize stock, and catalog ordering all align with the intended app logic.
+- The wireframe and ERD are used as the implementation spec, and the app was verified through actual workflow observations rather than a single acceptance dump.
+- Phase 5 polish is visible in the themed UI, verification comments, and model refinements, and the final deployment URL is included in the report.
+- The transcript recovery work is now reflected in the packaged transcript set, so the evidence package is consistent with the project chronology.
+
+## Gaps (priority order)
+1. None after this fresh evidence pass. The project records a complete phase progression and a coherent final deployment state.
+
+## Phase gate status
+| Phase | Status | Note |
+|-------|--------|------|
+| 1 | met | The project concept and the three named workflows are clearly established in the report and transcript set. |
+| 2 | met | Use-case framing and the role split are clearly established; the student engaged the required workflow and balance logic. |
+| 3 | met | The entity and property decisions are reflected in the model and final report. |
+| 4 | met | The wireframe is present and used to anchor the implementation choices and verification checks. |
+| 5 | met | Theme, implementation, per-workflow verification, and polish are all documented. |
+| 6 | met | Deployment URL and presentation URL are included in the final report state. |
+
+## Recommended next practice
+- Keep the current project pattern: continue with concrete, workflow-led prompts and per-feature verification before any further polish or deployment adjustment.
+
+## Integrity note
+- Clean
+## Provenance flags
+- None
+## Sincerity log summary
+- Blocks found: 0 | max round: 0 | min/mean/final confidence: n/a | trend: n/a | cleared: n/a
+## Skips
+- Skips: 0/3 used
 
 ## Skill integrity
 
-Filled by `python manage.py report`. Do not edit the course skills.
+Course skills are hashed at export and compared to `.agents/skills.lock.json`. Do not edit `.agents/skills/`, `.cursor/skills/`, or `AGENTS.md`.
+
+- Status: **pass**
+- Root: `e84cd692d0b85eefe546385661958c27d07e8be6c5176a82012f68ccff5c8beb`
+- none

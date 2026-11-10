@@ -135,10 +135,11 @@ def cmd_run(args: argparse.Namespace) -> None:
 
 
 def cmd_report(args: argparse.Namespace) -> None:
-    """Build the submission package: merge judge, package transcripts, write PDF.
+    """Build the submission package: merge judge, package transcripts separately, write PDF.
 
     Guide must (1) write ``docs/judge.md`` and (2) pull every Guide chat into
-    ``docs/transcripts/*.md`` before this command. Report only packages those files.
+    ``docs/transcripts/*.md`` before this command. The PDF does not include transcripts;
+    it keeps their archive alongside the report.
     """
     from app.report_pdf import export_report
     from app.skill_integrity import format_report, verify

@@ -17,11 +17,7 @@ from fpdf.html import HTML2FPDF
 from PIL import Image
 
 from app.skill_integrity import IntegrityResult, require_clean, stamp_markdown
-from app.transcript_export import (
-    appendix_markdown,
-    export_project_transcripts,
-    merge_transcripts_section,
-)
+from app.transcript_export import export_project_transcripts
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_REPORT = REPO_ROOT / "docs" / "report.md"
@@ -219,7 +215,6 @@ def export_report(
     markdown = merge_judge_section(src.read_text(encoding="utf-8"))
     markdown = ensure_usecase_in_report(markdown, report_path=src)
     markdown = ensure_wireframes_in_report(markdown, report_path=src)
-    markdown = merge_transcripts_section(markdown, transcripts)
     markdown = stamp_markdown(markdown, integrity)
     src.write_text(markdown, encoding="utf-8")
     if COMPETENCY_HEADING not in markdown:
@@ -234,15 +229,7 @@ def export_report(
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         cover = _cover_html(clean_name, clean_id, app_url, logins, integrity, missing)
         body = _markdown_to_html(markdown, src.parent, Path(tmp))
-        appendix = _markdown_to_html(
-            appendix_markdown(transcripts),
-            src.parent,
-            Path(tmp),
-        )
         _write_report_html(pdf, cover + body)
-        if appendix.strip():
-            pdf.add_page()
-            _write_report_html(pdf, appendix)
     pdf.output(dest)
     print(f"  [3/3] PDF: {dest.as_posix()}")
     if missing:
