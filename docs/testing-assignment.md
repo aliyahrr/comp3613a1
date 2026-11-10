@@ -62,22 +62,38 @@ at 3 hours.
 | UAT-08 | As `bob`, select the 3-hour Waterbottle and cancel confirmation. | Cancellation returns to Prizes without redeeming. | Confirmation showed 3-hour cost / projected balance; cancel returned to shop without redemption. Pass (recorded). |
 | UAT-09 | As `bob`, confirm the Waterbottle redemption. | Success shows 3.0 remaining hours and receipt/QR. | Success screen showed 3.0 balance, QR, and receipt code. Pass (recorded). |
 
-Detailed UAT tasks, criteria, and observations: [User Acceptance Test Plan](test-plans.md#user-acceptance-test-plan).
-
 ### Unit Test Plan
 
-Service-level tests verify that invalid hours are rejected, approving a
-submission updates approved and lifetime totals, and prize redemption deducts
-the cost and decrements prize stock. The tests use isolated test data.
+Unit tests isolate service behaviour using a test database and controlled
+student, admin, and prize records.
+
+| ID | Test case | Expected result |
+|---|---|---|
+| UT-01 | Submit volunteer hours with a value of zero. | `VolunteerHoursService` raises a validation error stating hours must be more than zero. |
+| UT-02 | Approve a pending 3.5-hour submission. | The submission becomes Approved, and the student's approved and lifetime totals each increase by 3.5 hours. |
+| UT-03 | Redeem a 4-hour prize with 10 approved hours and stock of 2. | A redemption records 4 hours spent, the student's balance becomes 6 hours, and prize stock becomes 1. |
 
 ### Integration Test Plan
 
-FastAPI TestClient route tests exercise multipart volunteer-hour submission,
-the `POST /api/hours` resource response, 422 validation for zero hours, admin
-review, prize redemption, and authorization responses (401 without a session
-and 403 for a student accessing an admin route).
+FastAPI `TestClient` tests exercise complete HTTP requests against an isolated
+test database, including authentication, request validation, route responses,
+and persisted state.
 
-Detailed test plans: [Test Plans](test-plans.md#unit-test-plan).
+| ID | Test case | Expected result |
+|---|---|---|
+| IT-01 | Submit volunteer hours through the browser form with a proof upload. | The route redirects with status 303 and stores one Pending submission for the student. |
+| IT-02 | Create a volunteer-hours resource through `POST /api/hours` with form fields and a proof upload. | The route returns 201 with the public resource fields and does not expose the stored proof path. |
+| IT-03 | Submit zero hours through the browser form. | Request validation returns 422 and no valid submission is created. |
+| IT-04 | Approve a student's pending submission as an admin. | The route redirects with status 303, the submission becomes Approved, and the student's approved balance increases. |
+| IT-05 | Redeem a prize as an authenticated student with sufficient hours. | The route redirects with status 303 and prize stock decreases by one. |
+| IT-06 | Request the admin page without an authenticated session. | The route returns 401 Unauthorized. |
+| IT-07 | Request the admin page as an authenticated student. | The route returns 403 Forbidden. |
+
+Run the automated plans from the repository root with:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_services.py tests\test_routes.py -q
+```
 
 Reference documents supplied for this assignment:
 

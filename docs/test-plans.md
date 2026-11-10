@@ -34,30 +34,35 @@ execution evidence.
 
 ## Unit Test Plan
 
-Focus areas:
+Unit tests isolate service behaviour using a test database and controlled
+student, admin, and prize records.
 
-- VolunteerHoursService.submit_hours rejects invalid inputs.
-- The hours form rejects non-positive values before entering the service.
-- VolunteerHoursService.review_submission approves only Pending items and enforces rejection comments.
-- PrizeService.redeem_prize prevents empty stock and insufficient hours.
-- Prize redemption updates both the user balance and prize stock.
+| ID | Test case | Expected result |
+|---|---|---|
+| UT-01 | Submit volunteer hours with a value of zero. | `VolunteerHoursService` raises a validation error stating hours must be more than zero. |
+| UT-02 | Approve a pending 3.5-hour submission. | The submission becomes Approved, and the student's approved and lifetime totals each increase by 3.5 hours. |
+| UT-03 | Redeem a 4-hour prize with 10 approved hours and stock of 2. | A redemption records 4 hours spent, the student's balance becomes 6 hours, and prize stock becomes 1. |
 
 ## Integration Test Plan
 
-Validate end-to-end behaviour via FastAPI TestClient:
+FastAPI `TestClient` tests exercise complete HTTP requests against an isolated
+test database, including authentication, request validation, route responses,
+and persisted state.
 
-- create a student account and log in
-- create a volunteer-hours resource through `POST /api/hours`, verify the
-  response fields, and confirm the stored proof path is not returned
-- submit volunteer hours with a valid proof upload
-- review the submission as an admin
-- redeem a prize with enough approved hours
-- confirm all database states match expectations
+| ID | Test case | Expected result |
+|---|---|---|
+| IT-01 | Submit volunteer hours through the browser form with a proof upload. | The route redirects with status 303 and stores one Pending submission for the student. |
+| IT-02 | Create a volunteer-hours resource through `POST /api/hours` with form fields and a proof upload. | The route returns 201 with the public resource fields and does not expose the stored proof path. |
+| IT-03 | Submit zero hours through the browser form. | Request validation returns 422 and no valid submission is created. |
+| IT-04 | Approve a student's pending submission as an admin. | The route redirects with status 303, the submission becomes Approved, and the student's approved balance increases. |
+| IT-05 | Redeem a prize as an authenticated student with sufficient hours. | The route redirects with status 303 and prize stock decreases by one. |
+| IT-06 | Request the admin page without an authenticated session. | The route returns 401 Unauthorized. |
+| IT-07 | Request the admin page as an authenticated student. | The route returns 403 Forbidden. |
 
 ## Test execution
 
-Run the suite with:
+Run the unit and integration test plans from the repository root with:
 
-```bash
-pytest -q
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_services.py tests\test_routes.py -q
 ```
