@@ -126,10 +126,11 @@ python manage.py run --no-reload
 ## Postman / Newman tests
 
 The collection at `docs/postman/student-awards-api.postman_collection.json` follows
-the app's actual FastAPI routes. The workflow pages submit HTML forms (URL-encoded
-login/review forms and a multipart hours form); authentication is a JWT stored in
-the `access_token` cookie, which Postman/Newman keeps between requests. The JSON
-API request checks `GET /api/users` and its `UserResponse` list.
+the app's actual FastAPI routes. The browser workflow pages remain HTML/form based. The JSON API includes
+`GET /api/users` and `POST /api/hours`; the latter accepts multipart form data
+with a proof upload and returns a `VolunteerHoursRead` resource without exposing
+the stored proof path. Authentication is a JWT stored in the `access_token`
+cookie, which Postman/Newman keeps between requests.
 
 The collection submits and approves 12 hours for the seeded student `bob`, then
 checks and redeems seeded prize ID 1 (the $50 Amazon Giftcard, cost 10 hours).
@@ -144,11 +145,11 @@ prize catalog. Use a disposable local database if you need to preserve data.
 Running `init` again resets the records and IDs so the collection can be rerun.
 
 From the repository root, initialize the disposable test database and start
-Uvicorn on the collection's default URL:
+the app on port 5000:
 
 ```bash
 python manage.py init
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+python manage.py run
 ```
 
 In another terminal, with Node.js installed, install Newman if needed and run
@@ -156,17 +157,16 @@ the collection:
 
 ```bash
 npm install --global newman
-newman run docs/postman/student-awards-api.postman_collection.json --working-dir . --ignore-redirects
+newman run docs/postman/student-awards-api.postman_collection.json --env-var "base_url=http://127.0.0.1:5000" --working-dir . --ignore-redirects
 ```
 
 `--ignore-redirects` lets the tests assert the app's actual 303 form-action
 responses. Run `python manage.py init` before each collection run; it is
 destructive to the configured database.
 
-In the Postman Desktop app, run the collection at `http://127.0.0.1:8000` (or
-change its `base_url` collection variable to `http://127.0.0.1:5000` when using
-the default `python manage.py run` port). Postman follows 303 redirects by
-default; the assertions accept the final 200 page as well as an un-followed 303.
+In the Postman Desktop app, run the collection at `http://127.0.0.1:5000`.
+Postman follows 303 redirects by default; the assertions accept the final 200
+page as well as an un-followed 303.
 For both hours requests, open **Body → form-data**, click the `proof_file` row's
 value, and select `tests/fixtures/proof.pdf` from the repository. The API requires
 this multipart file; if Postman did not retain the imported local path, the

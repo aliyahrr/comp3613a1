@@ -104,6 +104,19 @@ class ReportHTML2FPDF(HTML2FPDF):
         super().handle_starttag(tag, attrs)
         if tag == "table" and self.table is not None:
             self.table._headings_style = FontFace(emphasis="BOLD", color="#FFFFFF")
+        elif tag == "th":
+            self.pdf.set_text_color(255, 255, 255)
+        elif tag == "td":
+            self.pdf.set_text_color(0, 0, 0)
+        elif tag == "font" and self.td_th is not None:
+            self.pdf.set_text_color(self.font_color)
+
+    def handle_endtag(self, tag: str) -> None:
+        super().handle_endtag(tag)
+        if tag == "font" and self.td_th is not None:
+            self.pdf.set_text_color(self.font_color)
+        elif tag in {"td", "th", "table"}:
+            self.pdf.set_text_color(0, 0, 0)
 
 
 class ReportPDF(FPDF):

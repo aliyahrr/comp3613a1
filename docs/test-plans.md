@@ -17,17 +17,20 @@ test as passed based on the Postman collection alone.
 
 ### UAT cases
 
-| ID | Wireframe screen / flow | User task | Expected result / acceptance criteria | Actual result | Outcome |
-|---|---|---|---|---|---|
-| UAT-01 | Sign in | Sign in as `bob`. | Student Awards opens with student navigation, including My Hours and Prizes. | Screenshot shows the login form with username `bob`; authenticated screenshots show “Welcome, bob” and the student navigation. | Pass |
-| UAT-02 | Workflow 1: My Hours → Submit hours | Submit volunteer hours with an activity, completion date, and proof file. | Submission appears in My Hours as Pending; approved balance does not change until review. | Form screenshot shows Animal Shelter, 4 hours, a completion date, and `matrix.pdf`. My Hours then shows Animal Shelter, 4.0 hours, Pending, while the approved balance remains 2.0. | Pass |
-| UAT-03 | Workflow 2: Pending Approvals → Reviewing | Sign in as `admin`, open the pending submission, inspect it, and approve it. | Submission is approved; approved and lifetime totals increase by the submitted 4 hours. | Admin's Pending approvals screenshot lists Bob's Animal Shelter submission for 4.0 hours. The later My Hours screenshot shows it Approved, with approved hours changing from 2.0 to 6.0 and lifetime hours from 12.0 to 16.0. | Pass |
-| UAT-04 | Workflow 2: Reviewing → Reject without comment | Leave the rejection comment blank and select Reject. | Rejection is blocked with a required-comment message; the review remains available for correction. | Review screenshot shows the blank comment field and the alert “A comment is required when rejecting a submission.” | Pass |
-| UAT-04a | Workflow 2: Reviewing → Reject with comment | Add a rejection comment to a pending submission and select Reject. | Submission is marked Rejected, the comment is retained, and approved balance does not increase. | The screenshot sequence shows the admin entering “proof is blurry” for Bob's 2-hour “Planting trees” submission and rejecting it; the student confirmed the rejection workflow passed. | Pass |
-| UAT-05 | Workflow 3: Prizes | As `bob`, open Prizes with 6 approved hours and inspect the T-shirt. | Current approved hours show 6; the T-shirt is out of stock and cannot be redeemed. | Prize-shop screenshot shows current approved hours 6.0 and the T-shirt marked “Out of stock”; giftcard and Waterbottle options are available. | Pass |
-| UAT-06 | Workflow 3: Insufficient-hours screen | Select the $50 Amazon Giftcard, which costs 10 hours. | The shortfall screen says 4 more approved hours are needed and offers a path back to prizes or to submit hours; no redemption occurs. | Screenshot states “Need 4.0 more approved hours to claim $50 Amazon Giftcard” and shows Submit hours and Back to prizes options. | Pass |
-| UAT-07 | Workflow 3: Redeem confirmation | Select Waterbottle (cost: 3 hours), then choose Cancel. | Student returns to the catalog; balance remains 6 and stock is unchanged. | The screenshot sequence shows the Waterbottle confirmation with cost 3 hours and balance after 3.0 hours, followed by cancellation back to the prize shop; the student confirmed the cancel workflow passed. | Pass |
-| UAT-08 | Workflow 3: Redeem confirmation → Success / QR receipt | Confirm a Waterbottle redemption after reviewing the confirmation. | Success screen shows remaining balance 3 and a QR receipt; redemption succeeds. | Success screenshot shows Waterbottle, remaining balance 3.0 hours, a QR code, and a receipt code. | Pass |
+“Pass (recorded)” means the outcome was reported from the supplied manual
+execution evidence.
+
+| ID | Preconditions and test action | Acceptance criteria | Actual result, evidence, and status |
+|---|---|---|---|
+| UAT-01 | Sign in as student `bob`. | Student session opens with My Hours and Prizes navigation. | Student navigation was visible in supplied screenshots. Pass (recorded). |
+| UAT-02 | As `bob`, submit 4 hours for Animal Shelter with date and proof. | Submission is Pending; balance remains 2.0 before review. | Pending status and unchanged 2.0 balance were shown. Pass (recorded). |
+| UAT-03 | As `admin`, approve Bob's pending 4-hour Animal Shelter submission. | Status becomes Approved; approved/lifetime totals increase by 4.0. | Approved; balances changed 2.0 → 6.0 and 12.0 → 16.0. Pass (recorded). |
+| UAT-04 | As `admin`, reject a pending submission with comment blank. | Rejection is blocked and required-comment validation appears. | “A comment is required when rejecting a submission.” Pass (recorded). |
+| UAT-05 | As `admin`, reject Bob's 2-hour Planting trees submission with “proof is blurry”. | Rejection completes with the supplied comment. | Admin entered the comment and completed rejection. Pass (recorded). |
+| UAT-06 | As `bob` with 6.0 approved hours, view the T-shirt in Prizes. | Balance is 6.0 and T-shirt availability is shown as out of stock. | 6.0 balance and “Out of stock” label were shown. Pass (recorded). |
+| UAT-07 | As `bob`, view the $50 giftcard costing 10 hours. | Shortfall of 4.0 hours is stated; submit-hours and return options are available. | Screen stated 4.0 more hours were needed and showed both options. Pass (recorded). |
+| UAT-08 | As `bob`, select the 3-hour Waterbottle and cancel confirmation. | Cancellation returns to Prizes without redeeming. | Confirmation showed 3-hour cost / projected balance; cancel returned to shop without redemption. Pass (recorded). |
+| UAT-09 | As `bob`, confirm the Waterbottle redemption. | Success shows 3.0 remaining hours and receipt/QR. | Success screen showed 3.0 balance, QR, and receipt code. Pass (recorded). |
 
 ## Unit Test Plan
 
@@ -44,6 +47,8 @@ Focus areas:
 Validate end-to-end behaviour via FastAPI TestClient:
 
 - create a student account and log in
+- create a volunteer-hours resource through `POST /api/hours`, verify the
+  response fields, and confirm the stored proof path is not returned
 - submit volunteer hours with a valid proof upload
 - review the submission as an admin
 - redeem a prize with enough approved hours

@@ -47,6 +47,43 @@ def test_student_can_submit_hours(client, engine, test_session):
         assert submissions[0].status == HoursStatus.Pending
 
 
+def test_student_can_create_hours_through_json_resource_route(
+    client,
+    test_session,
+):
+    student = User(
+        username="api_student",
+        email="api_student@example.com",
+        password=encrypt_password("pass123"),
+        role="regular_user",
+    )
+    test_session.add(student)
+    test_session.commit()
+    test_session.refresh(student)
+
+    _login(client, student)
+    response = client.post(
+        "/api/hours",
+        data={
+            "activity": "API submission",
+            "date_completed": "2025-02-06",
+            "hours": "1.5",
+        },
+        files={"proof_file": ("proof.pdf", b"%PDF-1.1", "application/pdf")},
+    )
+
+    assert response.status_code == 201
+    resource = response.json()
+    assert resource["student_id"] == student.id
+    assert resource["activity"] == "API submission"
+    assert resource["date"] == "2025-02-06"
+    assert resource["hours"] == 1.5
+    assert resource["status"] == "Pending"
+    assert resource["comment"] is None
+    assert "date_submitted" in resource
+    assert "proof" not in resource
+
+
 def test_zero_hours_request_fails_form_validation(client, test_session):
     student = User(
         username="student_zero",

@@ -2,7 +2,7 @@
 
 ## Summary
 
-The test suite covers the Student Awards services, FastAPI routes, cookie authentication, and the Postman workflow collection. The Postman collection uses the actual form and JSON endpoints, including login, volunteer-hours submission, admin review, prize redemption, and receipt/QR routes.
+The test suite covers the Student Awards services, FastAPI routes, cookie authentication, and the Postman workflow collection. The Postman collection uses the actual form and JSON endpoints, including login, the `POST /api/hours` resource endpoint, admin review, prize redemption, and receipt/QR routes.
 
 ## Automated validation
 
@@ -15,23 +15,21 @@ pytest -q
 Result:
 
 ```text
-9 passed, 1 warning
+10 passed, 1 warning
 ```
 
-The Postman/Newman collection passed against local Uvicorn both with redirects
-disabled at `http://127.0.0.1:8000` and with Postman's default redirect-follow
-behavior at `http://127.0.0.1:5000`:
+The latest Postman/Newman collection run passed against local Uvicorn at
+`http://127.0.0.1:8000` with redirects disabled:
 
 ```text
-requests:     18
-test-scripts: 18
-assertions:   18
+requests:     19
+test-scripts: 19
+assertions:   19
 failed:        0
 ```
 
-The runs after reset were preceded by `python manage.py init`. The reset check
-confirmed that seeded IDs and balances returned to their initial values, and
-that submissions and redemptions were empty.
+The latest run used a disposable SQLite database, seeded with `python manage.py
+init`, so it did not alter the configured project database.
 
 Separate test-file runs captured:
 
@@ -40,11 +38,13 @@ Separate test-file runs captured:
 3 passed, 1 warning in 0.21s
 
 .\.venv\Scripts\python.exe -m pytest tests\test_routes.py -q
-6 passed, 1 warning in 0.39s
+7 passed, 1 warning
 ```
 
 The warning in both runs is Starlette's deprecation warning about using
 `httpx` with `starlette.testclient`; it did not fail either test run.
+Newman also emitted Node.js dependency deprecation warnings; the collection
+completed with no failed requests or assertions.
 
 ## User Acceptance Testing
 

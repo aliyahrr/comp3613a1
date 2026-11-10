@@ -7,8 +7,53 @@ from app.dependencies.auth import AuthDep
 from app.dependencies.session import SessionDep
 from app.repositories.volunteer_hours import VolunteerHoursRepository
 from app.repositories.user import UserRepository
+from app.schemas.volunteer_hours import VolunteerHoursRead
 from app.services.volunteer_hours_service import VolunteerHoursService
-from . import router, templates
+from . import api_router, router, templates
+
+
+@api_router.post(
+    "/hours",
+    status_code=status.HTTP_201_CREATED,
+    response_model=VolunteerHoursRead,
+)
+def create_volunteer_hours_resource(
+    user: AuthDep,
+    db: SessionDep,
+    activity: str = Form(),
+    date_completed: date = Form(),
+    hours: float = Form(gt=0),
+    proof_file: UploadFile = File(),
+):
+    if user.id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You must be signed in to submit hours.",
+        )
+
+    service = VolunteerHoursService(
+        VolunteerHoursRepository(db=db),
+        UserRepository(db),
+    )
+
+    try:
+        return service.submit_hours(
+            student_id=user.id,
+            activity=activity,
+            date_completed=date_completed,
+            hours=hours,
+            proof_file=proof_file,
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        ) from error
+    except OSError as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not save the proof file. Please try again.",
+        ) from error
 
 
 @router.get("/app/hours/new", name="submit_volunteer_hours_form")

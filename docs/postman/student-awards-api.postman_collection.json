@@ -244,6 +244,65 @@
       ]
     },
     {
+      "name": "Hours resource API - POST /api/hours",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "activity",
+              "value": "REST API Postman submission",
+              "type": "text"
+            },
+            {
+              "key": "date_completed",
+              "value": "2026-11-09",
+              "type": "text"
+            },
+            {
+              "key": "hours",
+              "value": "1.5",
+              "type": "text"
+            },
+            {
+              "key": "proof_file",
+              "type": "file",
+              "src": "tests/fixtures/proof.pdf",
+              "description": "Postman Desktop: select tests/fixtures/proof.pdf from the repository. This field is required."
+            }
+          ]
+        },
+        "url": "{{base_url}}/api/hours"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Hours API creates a resource without exposing its proof path', function () {",
+              "  pm.response.to.have.status(201);",
+              "  const resource = pm.response.json();",
+              "  pm.expect(resource).to.include({",
+              "    activity: 'REST API Postman submission',",
+              "    date: '2026-11-09',",
+              "    hours: 1.5,",
+              "    status: 'Pending',",
+              "    comment: null",
+              "  });",
+              "  pm.expect(resource.student_id).to.be.a('number');",
+              "  pm.expect(resource).to.have.property('id').that.is.a('number');",
+              "  pm.expect(resource).to.have.property('date_submitted');",
+              "  pm.expect(resource).not.to.have.property('proof');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "Login as admin - POST /login",
       "request": {
         "method": "POST",
@@ -556,7 +615,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://127.0.0.1:8000"
+      "value": "http://127.0.0.1:5000"
     },
     {
       "key": "submission_id",
