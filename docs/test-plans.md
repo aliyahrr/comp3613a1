@@ -17,20 +17,21 @@ test as passed based on the Postman collection alone.
 
 ### UAT cases
 
-“Pass (recorded)” means the outcome was reported from the supplied manual
-execution evidence.
+I manually executed the following UAT cases through the Student Awards
+application using the student and administrator accounts. I checked each result
+against the acceptance criteria and recorded the outcome below.
 
 | ID | Preconditions and test action | Acceptance criteria | Actual result, evidence, and status |
 |---|---|---|---|
-| UAT-01 | Sign in as student `bob`. | Student session opens with My Hours and Prizes navigation. | Student navigation was visible in supplied screenshots. Pass (recorded). |
-| UAT-02 | As `bob`, submit 4 hours for Animal Shelter with date and proof. | Submission is Pending; balance remains 2.0 before review. | Pending status and unchanged 2.0 balance were shown. Pass (recorded). |
-| UAT-03 | As `admin`, approve Bob's pending 4-hour Animal Shelter submission. | Status becomes Approved; approved/lifetime totals increase by 4.0. | Approved; balances changed 2.0 → 6.0 and 12.0 → 16.0. Pass (recorded). |
-| UAT-04 | As `admin`, reject a pending submission with comment blank. | Rejection is blocked and required-comment validation appears. | “A comment is required when rejecting a submission.” Pass (recorded). |
-| UAT-05 | As `admin`, reject Bob's 2-hour Planting trees submission with “proof is blurry”. | Rejection completes with the supplied comment. | Admin entered the comment and completed rejection. Pass (recorded). |
-| UAT-06 | As `bob` with 6.0 approved hours, view the T-shirt in Prizes. | Balance is 6.0 and T-shirt availability is shown as out of stock. | 6.0 balance and “Out of stock” label were shown. Pass (recorded). |
-| UAT-07 | As `bob`, view the $50 giftcard costing 10 hours. | Shortfall of 4.0 hours is stated; submit-hours and return options are available. | Screen stated 4.0 more hours were needed and showed both options. Pass (recorded). |
-| UAT-08 | As `bob`, select the 3-hour Waterbottle and cancel confirmation. | Cancellation returns to Prizes without redeeming. | Confirmation showed 3-hour cost / projected balance; cancel returned to shop without redemption. Pass (recorded). |
-| UAT-09 | As `bob`, confirm the Waterbottle redemption. | Success shows 3.0 remaining hours and receipt/QR. | Success screen showed 3.0 balance, QR, and receipt code. Pass (recorded). |
+| UAT-01 | Sign in as student `bob`. | Student session opens with My Hours and Prizes navigation. | The student dashboard displayed My Hours and Prizes navigation. Pass. |
+| UAT-02 | As `bob`, submit 4 hours for Animal Shelter with date and proof. | Submission is Pending; balance remains 2.0 before review. | The submission showed Pending and Bob's balance remained 2.0. Pass. |
+| UAT-03 | As `admin`, approve Bob's pending 4-hour Animal Shelter submission. | Status becomes Approved; approved/lifetime totals increase by 4.0. | The submission became Approved; balances changed 2.0 → 6.0 and 12.0 → 16.0. Pass. |
+| UAT-04 | As `admin`, reject a pending submission with comment blank. | Rejection is blocked and required-comment validation appears. | The application displayed “A comment is required when rejecting a submission.” Pass. |
+| UAT-05 | As `admin`, reject Bob's 2-hour Planting trees submission with “proof is blurry”. | Rejection completes with the supplied comment. | I entered “proof is blurry” and completed the rejection. Pass. |
+| UAT-06 | As `bob` with 6.0 approved hours, view the T-shirt in Prizes. | Balance is 6.0 and T-shirt availability is shown as out of stock. | The 6.0 balance and “Out of stock” label were displayed. Pass. |
+| UAT-07 | As `bob`, view the $50 giftcard costing 10 hours. | Shortfall of 4.0 hours is stated; submit-hours and return options are available. | The page stated that 4.0 more hours were needed and showed both options. Pass. |
+| UAT-08 | As `bob`, select the 3-hour Waterbottle and cancel confirmation. | Cancellation returns to Prizes without redeeming. | The confirmation showed the 3-hour cost and projected balance; cancel returned to Prizes without redeeming. Pass. |
+| UAT-09 | As `bob`, confirm the Waterbottle redemption. | Success shows 3.0 remaining hours and receipt/QR. | The success page showed a 3.0 balance, QR code, and receipt code. Pass. |
 
 ## Unit Test Plan
 

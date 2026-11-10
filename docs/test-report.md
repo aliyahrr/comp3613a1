@@ -19,7 +19,7 @@ Result:
 ```
 
 The latest Postman/Newman collection run passed against local Uvicorn at
-`http://127.0.0.1:8000` with redirects disabled:
+`http://127.0.0.1:5000` with redirects disabled:
 
 ```text
 requests:     19
@@ -49,13 +49,8 @@ completed with no failed requests or assertions.
 ## User Acceptance Testing
 
 The wireframe-based UAT outcomes are recorded in [docs/test-plans.md](test-plans.md).
-The submitted screenshots show the student login, hours submission and pending
-status, admin pending review and approval, the 6-hour prize catalog, the
-4-hour giftcard shortfall, the required-comment validation, and the Waterbottle
-success/QR receipt. The screenshot sequences also show the comment entered
-before rejection and the Waterbottle confirmation followed by canceling back
-to the prize shop. These UAT cases are recorded as passed. Postman results
-remain separate API-level evidence.
+Postman screenshots document the API-level collection run; the UAT cases are
+reported separately from those API results.
 
 ## Artifacts
 

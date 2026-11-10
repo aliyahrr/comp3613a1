@@ -101,6 +101,16 @@ class ReportHTML2FPDF(HTML2FPDF):
     """fpdf2 ignores <font color> inside <th>/<td>; force white heading text."""
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attrs_dict = dict(attrs)
+        if tag == "h3" and attrs_dict.get("class") == "landscape-evidence":
+            self._end_paragraph()
+            self.pdf.add_page(orientation="L")
+            self._wide_screenshot_count = 0
+        elif tag == "img" and "postman-run-" in (attrs_dict.get("src") or ""):
+            if getattr(self, "_wide_screenshot_count", 0):
+                self._end_paragraph()
+                self.pdf.add_page(orientation="L")
+            self._wide_screenshot_count = getattr(self, "_wide_screenshot_count", 0) + 1
         super().handle_starttag(tag, attrs)
         if tag == "table" and self.table is not None:
             self.table._headings_style = FontFace(emphasis="BOLD", color="#FFFFFF")
@@ -122,6 +132,7 @@ class ReportHTML2FPDF(HTML2FPDF):
 class ReportPDF(FPDF):
     HTML2FPDF_CLASS = ReportHTML2FPDF
     incomplete = False
+    assignment_title = "COMP 3613 Assignment 1"
 
     def header(self) -> None:
         if self.page_no() == 1:
@@ -132,7 +143,7 @@ class ReportPDF(FPDF):
             self.set_text_color(255, 255, 255)
             self.set_font("Body", "B", 20)
             self.set_xy(self.l_margin, 9)
-            self.cell(self.epw, 10, "COMP 3613 Assignment 1")
+            self.cell(self.epw, 10, self.assignment_title)
             self.set_font("Body", "", 11)
             self.set_xy(self.l_margin, 20)
             subtitle = "Individual report (incomplete)" if self.incomplete else "Individual report"
@@ -144,7 +155,7 @@ class ReportPDF(FPDF):
         self.set_y(10)
         self.set_font("Body", "", 9)
         self.set_text_color(*NAVY)
-        self.cell(self.epw, 6, "COMP 3613 Assignment 1", new_x="LMARGIN", new_y="NEXT")
+        self.cell(self.epw, 6, self.assignment_title, new_x="LMARGIN", new_y="NEXT")
         self.ln(1.5)
         self.set_draw_color(*GOLD)
         self.set_line_width(0.5)
@@ -470,9 +481,13 @@ def replace_competency_section(markdown: str, judge_markdown: str) -> str:
     return text
 
 
-def _new_pdf(incomplete: bool) -> ReportPDF:
+def _new_pdf(
+    incomplete: bool,
+    assignment_title: str = "COMP 3613 Assignment 1",
+) -> ReportPDF:
     pdf = ReportPDF(format="A4")
     pdf.incomplete = incomplete
+    pdf.assignment_title = assignment_title
     pdf.alias_nb_pages()
     pdf.set_auto_page_break(auto=True, margin=20)
     pdf.set_margins(16, 28, 16)
@@ -696,7 +711,12 @@ def _markdown_to_html(markdown: str, base: Path, tmp: Path) -> str:
             lower = text.lower()
             if "competency" in lower:
                 parts.append('<p style="break-before: page"></p>')
-            parts.append(f"<{tag}>{_inline_html(text)}</{tag}>")
+            if lower in {"application wireframe", "integration test report"}:
+                parts.append('<p style="break-before: page"></p>')
+            if lower == "postman collection run report":
+                parts.append(f'<{tag} class="landscape-evidence">{_inline_html(text)}</{tag}>')
+            else:
+                parts.append(f"<{tag}>{_inline_html(text)}</{tag}>")
         elif kind == "paragraph":
             parts.append(f'<p style="line-height: 1.35">{_inline_html(blocks[i][1])}</p>')
         elif kind == "list":
@@ -763,7 +783,7 @@ def _image_html(path: Path) -> str:
     if px_w <= 0:
         px_w, px_h = 1600, 900
     aspect = px_h / px_w
-    width_mm = _CONTENT_WIDTH_MM
+    width_mm = 265.0 if path.name.startswith("postman-run-") else _CONTENT_WIDTH_MM
     height_mm = width_mm * aspect
     if height_mm > _MAX_IMAGE_HEIGHT_MM:
         height_mm = _MAX_IMAGE_HEIGHT_MM
